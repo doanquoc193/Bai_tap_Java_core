@@ -1,0 +1,133 @@
+### ===================================================================
+### BANK MANAGEMENT API TEST (HTTP Client for VS Code / IntelliJ IDEA)
+### Base URL: http://localhost:8081/bank
+### ===================================================================
+
+@baseUrl = http://localhost:8081/bank
+
+### -------------------------------------------------------------------
+### 1. CUSTOMER APIs (QUẢN LÝ KHÁCH HÀNG)
+### -------------------------------------------------------------------
+
+### 1.1 Tạo khách hàng 1
+POST {{baseUrl}}/api/customers
+Content-Type: application/json
+
+{
+  "customerCode": "CUST003",
+  "fullName": "Le Van Cuong",
+  "email": "cuong.le@example.com",
+  "phoneNumber": "0901122334"
+}
+
+### 1.2 Tạo khách hàng 2
+POST {{baseUrl}}/api/customers
+Content-Type: application/json
+
+{
+  "customerCode": "CUST004",
+  "fullName": "Pham Thi Dung",
+  "email": "dung.pham@example.com",
+  "phoneNumber": "0909988776"
+}
+
+### 1.3 Lấy danh sách khách hàng (Có phân trang)
+GET {{baseUrl}}/api/customers?page=0&size=10
+
+### 1.4 Lấy thông tin khách hàng theo Customer Code
+GET {{baseUrl}}/api/customers/code/CUST003
+
+### -------------------------------------------------------------------
+### 2. ACCOUNT APIs (QUẢN LÝ TÀI KHOẢN & NẠP TIỀN)
+### -------------------------------------------------------------------
+
+### 2.1 Tạo tài khoản thanh toán (PAYMENT) cho khách hàng
+# Thay thế customerId bằng id của khách hàng bạn vừa tạo
+POST {{baseUrl}}/api/accounts
+Content-Type: application/json
+
+{
+  "customerId": "a9b1604c-7679-4560-840a-908d2b22bda0",
+  "accountNumber": "ACC-888",
+  "accountType": "PAYMENT",
+  "initialBalance": 30000000,
+  "dailyLimit": 20000000
+}
+
+### 2.2 Tạo tài khoản tiết kiệm (SAVING)
+POST {{baseUrl}}/api/accounts
+Content-Type: application/json
+
+{
+  "customerId": "7d929173-006f-4b99-8664-b9845c21f57f",
+  "accountNumber": "ACC-999",
+  "accountType": "SAVING",
+  "initialBalance": 10000000,
+  "dailyLimit": 15000000
+}
+
+### 2.3 Xem danh sách tất cả tài khoản
+GET {{baseUrl}}/api/accounts
+
+### 2.4 Kiểm tra số dư tài khoản
+GET {{baseUrl}}/api/accounts/ACC-001/balance
+
+### 2.5 Nạp tiền vào tài khoản ACC-001
+POST {{baseUrl}}/api/accounts/ACC-001/deposits
+Content-Type: application/json
+
+{
+  "amount": 5000000
+}
+
+### -------------------------------------------------------------------
+### 3. TRANSACTION APIs (CHUYỂN TIỀN & LỊCH SỬ GIAO DỊCH)
+### -------------------------------------------------------------------
+
+### 3.1 Chuyển tiền thành công (ACC-001 -> ACC-002: 1,500,000 VND)
+POST {{baseUrl}}/api/transactions/transfers
+Content-Type: application/json
+
+{
+  "fromAccountNumber": "ACC-001",
+  "toAccountNumber": "ACC-002",
+  "amount": 1500000
+}
+
+### 3.2 Test lỗi chuyển tiền vượt quá hạn mức trong ngày
+POST {{baseUrl}}/api/transactions/transfers
+Content-Type: application/json
+
+{
+  "fromAccountNumber": "ACC-001",
+  "toAccountNumber": "ACC-002",
+  "amount": 25000000
+}
+
+### 3.3 Test lỗi số dư không đủ
+POST {{baseUrl}}/api/transactions/transfers
+Content-Type: application/json
+
+{
+  "fromAccountNumber": "ACC-002",
+  "toAccountNumber": "ACC-001",
+  "amount": 999999999
+}
+
+### 3.4 Xem lịch sử giao dịch của tài khoản ACC-001
+GET {{baseUrl}}/api/transactions/account/ACC-001?page=0&size=10
+
+### 3.5 Xem tất cả giao dịch hệ thống (Lọc theo trạng thái SUCCESS)
+GET {{baseUrl}}/api/transactions?status=SUCCESS
+
+### 3.6 Xem tất cả giao dịch thất bại (FAILED)
+GET {{baseUrl}}/api/transactions?status=FAILED
+
+### 3.7 Thống kê: Tổng số tiền giao dịch thành công
+GET {{baseUrl}}/api/transactions/analytics/total-success-amount
+
+### 3.8 Thống kê: Giao dịch thành công lớn nhất
+GET {{baseUrl}}/api/transactions/analytics/largest-success
+
+### 3.9 Thống kê: Gom nhóm giao dịch thành công theo tài khoản nguồn
+GET {{baseUrl}}/api/transactions/analytics/grouped-by-account

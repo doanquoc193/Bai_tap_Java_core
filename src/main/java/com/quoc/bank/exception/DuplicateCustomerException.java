@@ -1,8 +1,15 @@
 package com.quoc.bank.exception;
 
-public class DuplicateCustomerException extends RuntimeException {
+import com.quoc.bank.common.exception.AppException;
+import com.quoc.bank.common.exception.ErrorCode;
+
+public class DuplicateCustomerException extends AppException {
 
     public DuplicateCustomerException(String message) {
-        super(message);
+        super(ErrorCode.CUSTOMER_EXISTED, message);
+    }
+
+    public DuplicateCustomerException() {
+        super(ErrorCode.CUSTOMER_EXISTED);
     }
 }

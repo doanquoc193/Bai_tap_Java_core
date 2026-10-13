@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: bank-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: bank_management
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-123456}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_bank_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d bank_management"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  bank-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bank-management-service
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8081
+      DB_URL: jdbc:postgresql://postgres:5432/bank_management
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-123456}
+    ports:
+      - "8081:8081"
+
+volumes:
+  postgres_bank_data:

@@ -1,12 +1,15 @@
 package com.quoc.bank.exception;
-//xu li nghiep vu nhu :
-//chuyển cho chính mình;
-//amount bằng 0;
-//amount âm;
-//dữ liệu giao dịch không hợp lệ.
-public class InvalidTransactionException extends RuntimeException {
+
+import com.quoc.bank.common.exception.AppException;
+import com.quoc.bank.common.exception.ErrorCode;
+
+public class InvalidTransactionException extends AppException {
 
     public InvalidTransactionException(String message) {
-        super(message);
+        super(ErrorCode.VALIDATION_ERROR, message);
+    }
+
+    public InvalidTransactionException(ErrorCode errorCode, String message) {
+        super(errorCode, message);
     }
 }

@@ -1,0 +1,133 @@
+{
+  "info": {
+    "name": "Bank Management API",
+    "description": "API collection for testing Bank Management Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Customer Management",
+      "item": [
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerCode\": \"CUST005\",\n  \"fullName\": \"Hoang Van Em\",\n  \"email\": \"em.hoang@example.com\",\n  \"phoneNumber\": \"0933221100\"\n}"
+            },
+            "url": "http://localhost:8081/bank/api/customers"
+          }
+        },
+        {
+          "name": "Get Customers (Paged)",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8081/bank/api/customers?page=0&size=10"
+          }
+        },
+        {
+          "name": "Get Customer by Code",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8081/bank/api/customers/code/CUST001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Account Management",
+      "item": [
+        {
+          "name": "Create Account",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"a9b1604c-7679-4560-840a-908d2b22bda0\",\n  \"accountNumber\": \"ACC-123\",\n  \"accountType\": \"PAYMENT\",\n  \"initialBalance\": 10000000,\n  \"dailyLimit\": 20000000\n}"
+            },
+            "url": "http://localhost:8081/bank/api/accounts"
+          }
+        },
+        {
+          "name": "Get All Accounts",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8081/bank/api/accounts"
+          }
+        },
+        {
+          "name": "Check Balance",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8081/bank/api/accounts/ACC-001/balance"
+          }
+        },
+        {
+          "name": "Deposit Money",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 3000000\n}"
+            },
+            "url": "http://localhost:8081/bank/api/accounts/ACC-001/deposits"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Transaction Management",
+      "item": [
+        {
+          "name": "Transfer Money (Success)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromAccountNumber\": \"ACC-001\",\n  \"toAccountNumber\": \"ACC-002\",\n  \"amount\": 1000000\n}"
+            },
+            "url": "http://localhost:8081/bank/api/transactions/transfers"
+          }
+        },
+        {
+          "name": "Transfer Money (Exceed Daily Limit Test)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromAccountNumber\": \"ACC-001\",\n  \"toAccountNumber\": \"ACC-002\",\n  \"amount\": 25000000\n}"
+            },
+            "url": "http://localhost:8081/bank/api/transactions/transfers"
+          }
+        },
+        {
+          "name": "Get Account Transactions",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8081/bank/api/transactions/account/ACC-001?page=0&size=10"
+          }
+        },
+        {
+          "name": "Get Total Success Amount",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8081/bank/api/transactions/analytics/total-success-amount"
+          }
+        },
+        {
+          "name": "Get Largest Success Transaction",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8081/bank/api/transactions/analytics/largest-success"
+          }
+        }
+      ]
+    }
+  ]
+}
